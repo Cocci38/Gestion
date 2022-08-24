@@ -10,12 +10,16 @@ require '../vendor/autoload.php';
 define ('VIEWS' , dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR);
 // Contante qui envoie vers nos dossiers de script (dirname($_SERVER['SCRIPT_NAME']) pour avoir un bon chemin vers les scripts)
 define('SCRIPTS' , dirname($_SERVER['SCRIPT_NAME']). DIRECTORY_SEPARATOR);
+define('DB_NAME', 'magasin');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PWD', '');
 
 $router = new Router( $_GET['url']);
 
 // On appelle la fonction index et show dans le bloc BlogController
 $router->get('/', 'App\Controllers\ManagementController@index'); // Un chemin '/' et une action ManagementController@index' (le controller @ la méthode)
-$router->get('/articles/:id', 'App\Controllers\ManagementController@show'); // Dans l'url on écrit posts/id
+$router->get('/produits/:id', 'App\Controllers\ManagementController@show'); // Dans l'url on écrit posts/id
 
 /**
  * On tente d'executer cette fonction, si cette fonction relève une erreur (ici aucune route ne match avec l'url)
