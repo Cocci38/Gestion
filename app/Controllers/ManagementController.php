@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class ManagementController{
+class ManagementController extends Controller{
 
     public function index()
     {
