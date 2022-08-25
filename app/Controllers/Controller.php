@@ -8,13 +8,16 @@ class Controller {
 
     protected $db;
 
+    /**
+     * Récupérer de la connexion à la bdd passé au constructeur
+     */
     public function __construct(DBConnection $db)
     {
         $this->db = $db;
     }
 
     /**
-     * Fonction pour appeler la vue
+     * Méthode pour appeler la vue
      * ob_start() — démarre la temporisation de sortie. Tant qu'elle est enclenchée, aucune donnée, hormis les   
      * en-têtes, n'est envoyée au navigateur, mais temporairement mise en tampon.
      * ob_get_clean — Retourne le contenu du tampon de sortie et termine la session de temporisation. Si la temporisation n'est pas activée, alors false sera retourné

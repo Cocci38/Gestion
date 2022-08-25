@@ -19,7 +19,8 @@ $router = new Router( $_GET['url']);
 
 // On appelle la fonction index et show dans le bloc BlogController
 $router->get('/', 'App\Controllers\ManagementController@index'); // Un chemin '/' et une action ManagementController@index' (le controller @ la méthode)
-$router->get('/produits/:id', 'App\Controllers\ManagementController@show'); // Dans l'url on écrit posts/id
+$router->get('/produits', 'App\Controllers\ManagementController@product'); // Dans l'url on écrit produits
+$router->get('/produits/:id', 'App\Controllers\ManagementController@productId'); // Dans l'url on écrit produits/id
 
 /**
  * On tente d'executer cette fonction, si cette fonction relève une erreur (ici aucune route ne match avec l'url)
