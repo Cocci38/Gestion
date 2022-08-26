@@ -27,11 +27,10 @@ class ManagementController extends Controller{
 
     public function productId(int $id)
     {
-        echo 'Je suis l\'article ' . $id;
+        $product = new Product($this->getDB());
+        $product = $product->readById($id);
+        return $this->view('products.card', compact('product'));
     }
 }
-
-
-
 
 ?>

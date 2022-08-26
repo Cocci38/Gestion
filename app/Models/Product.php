@@ -6,6 +6,7 @@ use DateTime;
 
 class Product extends Model {
 
+    protected $id_produit;
     protected $title;
     protected $description;
     protected $price;
@@ -18,6 +19,17 @@ class Product extends Model {
     // Fonction pour retourner la date
     {
         return (new DateTime($this->date))->format('d/m/Y');
+    }
+
+    public function getIdProduct()
+    {
+        return $this->id_produit;
+    }
+
+    public function setid_produit($id_produit)
+    {
+        $this->id_produit = $id_produit;
+        return $this;
     }
     
     public function getTitle()
