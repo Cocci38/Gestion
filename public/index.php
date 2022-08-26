@@ -21,7 +21,12 @@ $router = new Router( $_GET['url']);
 $router->get('/', 'App\Controllers\ManagementController@index'); // Un chemin '/' et une action ManagementController@index' (le controller @ la méthode)
 $router->get('/produits', 'App\Controllers\ManagementController@product'); // Dans l'url on écrit produits
 $router->get('/produits/:id', 'App\Controllers\ManagementController@productId'); // Dans l'url on écrit produits/id
-
+// Route pour afficher le formulaire
+// $router->get('/ajout', 'App\Controllers\ManagementController@form'); // Dans l'url on écrit form
+// Route pour renvoyer le formulaire
+$router->get('/ajout', 'App\Controllers\ManagementController@create');
+// Route pour traiter les données du formulaire
+$router->post('/ajout', 'App\Controllers\ManagementController@createProduct'); // Dans l'url on écrit form
 /**
  * On tente d'executer cette fonction, si cette fonction relève une erreur (ici aucune route ne match avec l'url)
  * On va pouvoir ratrapper notre exception qui est de classe Exception et lui passer  le message indiqué dans getMessage()

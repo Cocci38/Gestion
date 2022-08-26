@@ -24,6 +24,11 @@ class Router {
         $this->routes['GET'][] = new Route($path, $action);
     }
 
+    public function post(string $path, string $action)
+    {
+        $this->routes['POST'][] = new Route($path, $action);
+    }
+
     /**
      * Méthode pour parcourir les différentes routes enregistrées et vérifier s'il y a correspondance avec l'URL qui est passée au constructeur grâce à la fonction matches()
      * Si aucune route ne correspond à l'URL ou la méthode alors on renvoie une Exception pour afficher les erreurs

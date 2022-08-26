@@ -31,6 +31,22 @@ class ManagementController extends Controller{
         $product = $product->readById($id);
         return $this->view('products.card', compact('product'));
     }
+
+    public function create()
+    {
+        return $this->view('products.form');
+    }
+
+    public function createProduct()
+    {
+        $product = new Product($this->getDB());
+        $newProduct = $product->setTitle($_POST['title'])->setDescription($_POST['description'])->setPrice($_POST['price'])->setDate($_POST['date'])->setCategorie($_POST['categorie']);
+        $product = new Product($this->getDB());
+        $result = $product->create($newProduct);
+        if ($result) {
+            return header('Location: /gestion/produits');
+        }
+    }
 }
 
 ?>

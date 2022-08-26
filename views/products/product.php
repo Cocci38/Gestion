@@ -4,3 +4,4 @@
     <p>Catégorie : <?= $product->getCategorie() ?></p>
     <button type="submit"><a href="produits/<?= $product->getIdProduct() ?>"> Fiche</a></button>
 <?php endforeach ?>
+<button><a href="/gestion/ajout">Ajouter</a></button>

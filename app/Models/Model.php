@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use PDO;
+use PDOException;
 use Database\DBConnection;
 
 class Model
@@ -46,5 +47,41 @@ class Model
         $select->setFetchMode(PDO::FETCH_CLASS, get_class($this), [$this->db]);
         $select->execute();
         return $select->fetch();
+    }
+
+    public function create(Model $data, ?array $relations = null)
+    {
+        $keys=[];
+        $inter=[];
+        $values=[];
+
+        foreach ($data as $key => $value) {
+            if($value != null && $key != 'table' && $key != 'db'){
+            $keys[ ]=$key;
+            $inter[]="?";
+            $values[]=$value;
+            }
+        }
+        $colonne=implode(",",$keys);
+        $stringInter=implode(",",$inter);
+
+        $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne)
+        VALUES($stringInter)");
+        $select->execute($values);
+
+        // try {
+        //     $stmt = $this->db->getPDO()->prepare("INSERT INTO $this->table (status, description, date, location, firstname, lastname, email, users_id) VALUES(:status, :description, :date, :location, :firstname, :lastname, :email, :users_id)");
+        //     $stmt->bindParam("status", $status, PDO::PARAM_INT);
+        //     $stmt->bindParam("description", $description, PDO::PARAM_STR);
+        //     $stmt->bindParam("date", $date, PDO::PARAM_STR);
+        //     $stmt->bindParam("location", $location, PDO::PARAM_STR);
+        //     $stmt->bindParam("firstname", $firstname, PDO::PARAM_STR);
+        //     $stmt->bindParam("lastname", $lastname, PDO::PARAM_STR);
+        //     $stmt->bindParam("email", $email, PDO::PARAM_STR);
+        //     $stmt->bindParam("users_id", $users_id, PDO::PARAM_INT);
+        //     $stmt->execute();
+        // } catch (PDOException $exception) {
+        //     echo "Erreur de connexion : " . $exception->getMessage();
+        // }
     }
 }

@@ -16,7 +16,7 @@ class Product extends Model {
     public $table = 'produits';
 
     public function getCreatedAt(): string
-    // Fonction pour retourner la date
+    // Méthode pour récupérer la date dans le format voulu
     {
         return (new DateTime($this->date))->format('d/m/Y');
     }
@@ -65,16 +65,16 @@ class Product extends Model {
         return $this;
     }
 
-    // public function getDate()
-    // {
-    //     return $this->date;
-    // }
+    public function getDate()
+    {
+        return $this->date;
+    }
 
-    // public function setDate($date)
-    // {
-    //     $this->date = $date;
-    //     return $this;
-    // }
+    public function setDate($date)
+    {
+        $this->date = $date;
+        return $this;
+    }
 
     public function getCategorie()
     {
@@ -96,6 +96,13 @@ class Product extends Model {
     {
         $this->image = $image;
         return $this;
+    }
+
+    public function create(Model $data, ?array $relation = null)
+    {
+        parent::create($data);
+
+        return true;
     }
 }
 
