@@ -49,39 +49,76 @@ class Model
         return $select->fetch();
     }
 
-    public function create(Model $data, ?array $relations = null)
+    public function create(Product $data, ?array $relations = null)
     {
-        $keys=[];
-        $inter=[];
-        $values=[];
 
-        foreach ($data as $key => $value) {
-            if($value != null && $key != 'table' && $key != 'db'){
-            $keys[ ]=$key;
-            $inter[]="?";
-            $values[]=$value;
+        error_log(print_r($data, 1));
+        try {
+            $colonne = '';
+            $stringInter = '';
+            foreach ($data as $key => $value) {
+                // Si les value ne sont pas null et que les key est différent de table et de db
+                if (gettype($value) == 'integer' || gettype($value) == 'string') {
+                    if ($value !== null && $key != 'table' && $key != 'db') {
+                        $keys[] = $key;
+                        $inter[] = ":" . $key;
+                        // $values[] = $value;
+                    }
+                }
             }
+
+            $colonne = implode(",", $keys);
+            $stringInter = implode(",", $inter);
+
+            // error_log(print_r($colonne, 1));
+            // error_log(print_r($stringInter, 1));
+
+            $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
+            // echo "<pre>", print_r($keys, 1), "</pre>";
+            //             die;
+
+            foreach ($data as $key => $value) {
+                if ($value !== null && $key != 'table' && $key != 'db') {
+                    // error_log('valeur', $value);
+                    // $keys = $data->__set("$key", $value);
+                    error_log(print_r($data->__get($keys), 1));
+                    // $bp = $data->__get($keys);
+                    error_log(print_r($data->__set($key, $value), 1));
+                    if (gettype($value) == "integer") {
+                        // error_log("Bind (int)".$key." ".$value);
+                        //$select->bindParam($key, $value, PDO::PARAM_INT);
+                        $select->bindParam(':' . $key, $data->__get($value), PDO::PARAM_INT);
+
+                        // $select->bindParam(':' . $key, $value, PDO::PARAM_INT);
+                    } elseif (gettype($value) == "string") {
+                        // error_log("Bind (str)".$key." ".$value);
+                        // $select->bindParam($key, $value, PDO::PARAM_STR);
+                        // error_log($key);
+                        // $data[$this->donnee]->__get($value);
+                        $bp = $data->__get($keys);
+                        $select->bindParam(':' . $key, $bp, PDO::PARAM_STR);
+                        // error_log(':'.$key, $data->__get($value));
+                    }
+                }
+            }
+            // error_log(print_r($select, 1));
+            /*
+            $d1 = $data->getTitle();
+            $d2 =  $data->getDescription();
+
+            error_log($data->getTitle());
+            error_log($data->getDescription());
+
+            $select->bindParam(':title', $d1, PDO::PARAM_STR);
+            $select->bindParam(':description', $d2, PDO::PARAM_STR);
+            $select->bindParam(':price', $data->getPrice(), PDO::PARAM_STR);
+            $select->bindParam(':date', $data->getDate(), PDO::PARAM_STR);
+            $select->bindParam(':categorie', $data->getCategorie(), PDO::PARAM_STR);
+
+            error_log(print_r($select, 1));*/
+            $select->execute();
+        } catch (PDOException $exception) {
+            echo "Erreur de connexion : " . $exception->getMessage();
         }
-        $colonne=implode(",",$keys);
-        $stringInter=implode(",",$inter);
-
-        $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne)
-        VALUES($stringInter)");
-        $select->execute($values);
-
-        // try {
-        //     $stmt = $this->db->getPDO()->prepare("INSERT INTO $this->table (status, description, date, location, firstname, lastname, email, users_id) VALUES(:status, :description, :date, :location, :firstname, :lastname, :email, :users_id)");
-        //     $stmt->bindParam("status", $status, PDO::PARAM_INT);
-        //     $stmt->bindParam("description", $description, PDO::PARAM_STR);
-        //     $stmt->bindParam("date", $date, PDO::PARAM_STR);
-        //     $stmt->bindParam("location", $location, PDO::PARAM_STR);
-        //     $stmt->bindParam("firstname", $firstname, PDO::PARAM_STR);
-        //     $stmt->bindParam("lastname", $lastname, PDO::PARAM_STR);
-        //     $stmt->bindParam("email", $email, PDO::PARAM_STR);
-        //     $stmt->bindParam("users_id", $users_id, PDO::PARAM_INT);
-        //     $stmt->execute();
-        // } catch (PDOException $exception) {
-        //     echo "Erreur de connexion : " . $exception->getMessage();
-        // }
     }
 }

@@ -4,7 +4,8 @@ namespace App\Controllers;
 
 use App\Models\Product;
 
-class ManagementController extends Controller{
+class ManagementController extends Controller
+{
 
     public function index()
     {
@@ -39,14 +40,34 @@ class ManagementController extends Controller{
 
     public function createProduct()
     {
-        $product = new Product($this->getDB());
-        $newProduct = $product->setTitle($_POST['title'])->setDescription($_POST['description'])->setPrice($_POST['price'])->setDate($_POST['date'])->setCategorie($_POST['categorie']);
-        $product = new Product($this->getDB());
-        $result = $product->create($newProduct);
-        if ($result) {
-            return header('Location: /gestion/produits');
+        $title = htmlspecialchars(trim(strip_tags($_POST['title'])));
+        $description = htmlspecialchars(trim(strip_tags($_POST['description'])));
+        $price = htmlspecialchars(trim(strip_tags($_POST['price'])));
+        $date = htmlspecialchars(trim(strip_tags($_POST['date'])));
+        $categorie = htmlspecialchars(trim(strip_tags($_POST['categorie'])));
+
+        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
+            $product = new Product($this->getDB());
+            $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+            $result = $product->create($newProduct);
+            if ($result) {
+                return header('Location: /gestion/produits');
+            }
         }
+        // $tab['title'] = htmlspecialchars(trim(strip_tags($_POST['title'])));
+        // $tab['description'] = htmlspecialchars(trim(strip_tags($_POST['description'])));
+        // $tab['price'] = htmlspecialchars(trim(strip_tags($_POST['price'])));
+        // $tab['date'] = htmlspecialchars(trim(strip_tags($_POST['date'])));
+        // $tab['categorie'] = htmlspecialchars(trim(strip_tags($_POST['categorie'])));
+
+        // // if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
+        //     $product = new Product($this->getDB());
+        //     $newProduct = $product->tab;
+        //     // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+        //     $result = $product->create($newProduct);
+        //     if ($result) {
+        //         return header('Location: /gestion/produits');
+        //     }
+        // // }
     }
 }
-
-?>

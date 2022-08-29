@@ -4,7 +4,8 @@ namespace App\Models;
 
 use DateTime;
 
-class Product extends Model {
+class Product extends Model
+{
 
     protected $id_produit;
     protected $title;
@@ -14,12 +15,31 @@ class Product extends Model {
     protected $categorie;
     protected $image;
     public $table = 'produits';
+    public $donnee = [];
 
     public function getCreatedAt(): string
     // Méthode pour récupérer la date dans le format voulu
     {
         return (new DateTime($this->date))->format('d/m/Y');
     }
+
+    // public function __get($prop)
+    // {switch ($prop) {
+    //     case 'tab':
+    //         return $this->donnee;
+    //         break;
+    // }
+    //     return $this->donnee[$prop];
+    // }
+    public function __get($prop)
+    {
+        return $this->donnee[$prop];
+    }
+    public function __set($prop, $value)
+    {
+        $this->donnee[$prop] = $value;
+    }
+    
 
     public function getIdProduct()
     {
@@ -31,7 +51,7 @@ class Product extends Model {
         $this->id_produit = $id_produit;
         return $this;
     }
-    
+
     public function getTitle()
     {
         return $this->title;
@@ -101,9 +121,7 @@ class Product extends Model {
     public function create(Model $data, ?array $relation = null)
     {
         parent::create($data);
-
         return true;
     }
 }
 
-?>
