@@ -58,35 +58,20 @@ class ManagementController extends Controller
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
 
             $product = new Product($this->getDB());
-            // $product->title = $title;
-            // $product->description = $description;
-            // $product->price = $price;
-            // $product->date = $date;
-            // $product->categorie = $categorie;
+            $product->title = $title;
+            $product->description = $description;
+            $product->price = $price;
+            $product->date = $date;
+            $product->categorie = $categorie;
             // error_log(print_r($product, 1));
             // echo $produit;
-            $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            // $newProduct = $product;
+            // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+            $newProduct = $product;
             // error_log(print_r($newProduct, 1));
             $result = $product->create($newProduct);
             if ($result) {
                 return header('Location: /gestion/produits');
             }
         }
-        // $tab['title'] = htmlspecialchars(trim(strip_tags($_POST['title'])));
-        // $tab['description'] = htmlspecialchars(trim(strip_tags($_POST['description'])));
-        // $tab['price'] = htmlspecialchars(trim(strip_tags($_POST['price'])));
-        // $tab['date'] = htmlspecialchars(trim(strip_tags($_POST['date'])));
-        // $tab['categorie'] = htmlspecialchars(trim(strip_tags($_POST['categorie'])));
-
-        // // if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
-        //     $product = new Product($this->getDB());
-        //     $newProduct = $product->tab;
-        //     // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-        //     $result = $product->create($newProduct);
-        //     if ($result) {
-        //         return header('Location: /gestion/produits');
-        //     }
-        // // }
     }
 }
