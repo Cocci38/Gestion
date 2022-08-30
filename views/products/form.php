@@ -7,7 +7,7 @@
     <input type="text" name="description">
 
     <label for="price">Prix</label>
-    <input type="text" name="price">
+    <input type="number" name="price">
 
     <label for="date">Date</label>
     <input type="date" name="date">

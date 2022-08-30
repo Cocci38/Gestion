@@ -49,6 +49,20 @@ class Model
         return $select->fetch();
     }
 
+    private function getteType($value)
+    {
+        $type = null;
+        switch (gettype($value)) {
+            case 'string':
+                return PDO::PARAM_STR;
+                break;
+            case 'integer':
+                return PDO::PARAM_INT;
+                break;
+        }
+        // return $type;
+    }
+
     public function create(Product $data, ?array $relations = null)
     {
 
@@ -75,50 +89,82 @@ class Model
 
             $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
             // echo "<pre>", print_r($keys, 1), "</pre>";
-            //             die;
-
-            foreach ($data as $key => $value) {
-                if ($value !== null && $key != 'table' && $key != 'db') {
-                    // error_log('valeur', $value);
-                    // $keys = $data->__set("$key", $value);
-                    error_log(print_r($data->__get($keys), 1));
-                    // $bp = $data->__get($keys);
-                    error_log(print_r($data->__set($key, $value), 1));
-                    if (gettype($value) == "integer") {
-                        // error_log("Bind (int)".$key." ".$value);
-                        //$select->bindParam($key, $value, PDO::PARAM_INT);
-                        $select->bindParam(':' . $key, $data->__get($value), PDO::PARAM_INT);
-
-                        // $select->bindParam(':' . $key, $value, PDO::PARAM_INT);
-                    } elseif (gettype($value) == "string") {
-                        // error_log("Bind (str)".$key." ".$value);
-                        // $select->bindParam($key, $value, PDO::PARAM_STR);
-                        // error_log($key);
-                        // $data[$this->donnee]->__get($value);
-                        $bp = $data->__get($keys);
-                        $select->bindParam(':' . $key, $bp, PDO::PARAM_STR);
-                        // error_log(':'.$key, $data->__get($value));
-                    }
-                }
-            }
-            // error_log(print_r($select, 1));
-            /*
-            $d1 = $data->getTitle();
-            $d2 =  $data->getDescription();
-
-            error_log($data->getTitle());
-            error_log($data->getDescription());
-
-            $select->bindParam(':title', $d1, PDO::PARAM_STR);
-            $select->bindParam(':description', $d2, PDO::PARAM_STR);
-            $select->bindParam(':price', $data->getPrice(), PDO::PARAM_STR);
-            $select->bindParam(':date', $data->getDate(), PDO::PARAM_STR);
-            $select->bindParam(':categorie', $data->getCategorie(), PDO::PARAM_STR);
-
-            error_log(print_r($select, 1));*/
+            $title = $data->getTitle();
+            $description =  $data->getDescription();
+            $price = $data->getPrice();
+            $date = $data->getDate();
+            $categorie = $data->getCategorie();
+            // error_log($data->getTitle());
+            // error_log($data->getDescription());
+            $select->bindParam(':title', $title, PDO::PARAM_STR);
+            $select->bindParam(':description', $description, PDO::PARAM_STR);
+            $select->bindParam(':price', $price, PDO::PARAM_STR);
+            $select->bindParam(':date', $date, PDO::PARAM_STR);
+            $select->bindParam(':categorie', $categorie, PDO::PARAM_STR);
+            error_log(print_r($select, 1));
             $select->execute();
+            if ($select->rowCount() > 0) {
+                error_log('pas de problème');
+            } else {
+                error_log('problème');
+            }
         } catch (PDOException $exception) {
             echo "Erreur de connexion : " . $exception->getMessage();
         }
     }
+    // public function create(Product $data, ?array $relations = null)
+    // {
+
+    //     // try {
+    //     // error_log(print_r($data, 1));die;
+    //     // error_log(print_r(gettype($data), 1));
+    //     $colonne = '';
+    //     $stringInter = '';
+    //     foreach ($this->donnee as $key => $value) {
+    //         // error_log(print_r($key, 1));
+    //         // error_log(print_r($value, 1));
+    //         // Si les value ne sont pas null et que les key est différent de table et de db
+    //         // if (gettype($value) == 'integer' || gettype($value) == 'string') {
+
+    //         if ($value !== null && $key != 'table' && $key != 'db') {
+    //             // error_log(print_r($key, 1));
+    //             // error_log(print_r($value, 1));
+    //             $keys[] = $key;
+    //             $inter[] = ":" . $key;
+    //             // $values[] = $value;
+    //             // }
+    //         }
+    //     }
+    //     $colonne = implode(",", $keys);
+    //     $stringInter = implode(",", $inter);
+    //     // error_log(print_r($colonne, 1));
+    //     // error_log(print_r($stringInter, 1));
+    //     $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
+    //     // foreach ($this->donnee as $key => $value) {
+    //     //     // error_log(print_r($key, 1));
+    //     //     error_log(print_r($this->getteType($value), 1));
+    //     //     $select->bindParam(':' . $key, $value, $this->getteType($value));
+    //     //     // error_log($key, $value, $this->getteType($value));
+
+    //     // }
+    //     $select->execute();
+    //     // if ($select->rowCount() > 0) {
+    //     //     error_log('probleme');
+    //     // } else {
+    //     //     error_log('pas de problème');
+    //     // }
+    //     // error_log(print_r($colonne, 1));
+    //     // error_log(print_r($stringInter, 1));
+    //     // if ($key != 'db') {
+    //     //     error_log(print_r($this->donnee[$key]->$value, 1));
+    //     // }
+    //     // error_log(print_r($this->donnee[$key]->$value, 1));
+    //     // error_log(print_r($select, 1));
+    //     // echo "<pre>", print_r($keys, 1), "</pre>";
+    //     //             die;
+    //     // error_log(print_r($select, 1));
+    //     // } catch (PDOException $exception) {
+    //     //     echo "Erreur de connexion : " . $exception->getMessage();
+    //     // }
+    // }
 }

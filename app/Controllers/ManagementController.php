@@ -38,17 +38,36 @@ class ManagementController extends Controller
         return $this->view('products.form');
     }
 
+    private function is_date_valid($date, $format = "Y-m-d")
+    {
+        $parsed_date = date_parse_from_format($format, $date);
+        if (!$parsed_date['error_count'] && !$parsed_date['warning_count']) {
+            return true;
+        }
+    }
     public function createProduct()
     {
-        $title = htmlspecialchars(trim(strip_tags($_POST['title'])));
-        $description = htmlspecialchars(trim(strip_tags($_POST['description'])));
-        $price = htmlspecialchars(trim(strip_tags($_POST['price'])));
-        $date = htmlspecialchars(trim(strip_tags($_POST['date'])));
-        $categorie = htmlspecialchars(trim(strip_tags($_POST['categorie'])));
-
+        // error_log($_POST['date']);
+        $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
+        $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
+        $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
+        $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
+        // $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+        
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
+
             $product = new Product($this->getDB());
+            // $product->title = $title;
+            // $product->description = $description;
+            // $product->price = $price;
+            // $product->date = $date;
+            // $product->categorie = $categorie;
+            // error_log(print_r($product, 1));
+            // echo $produit;
             $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+            // $newProduct = $product;
+            // error_log(print_r($newProduct, 1));
             $result = $product->create($newProduct);
             if ($result) {
                 return header('Location: /gestion/produits');

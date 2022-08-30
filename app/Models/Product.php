@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use PDO;
 use DateTime;
 
 class Product extends Model
@@ -15,7 +16,7 @@ class Product extends Model
     protected $categorie;
     protected $image;
     public $table = 'produits';
-    public $donnee = [];
+    protected $donnee = [];
 
     public function getCreatedAt(): string
     // Méthode pour récupérer la date dans le format voulu
@@ -31,15 +32,6 @@ class Product extends Model
     // }
     //     return $this->donnee[$prop];
     // }
-    public function __get($prop)
-    {
-        return $this->donnee[$prop];
-    }
-    public function __set($prop, $value)
-    {
-        $this->donnee[$prop] = $value;
-    }
-    
 
     public function getIdProduct()
     {
@@ -118,10 +110,35 @@ class Product extends Model
         return $this;
     }
 
-    public function create(Model $data, ?array $relation = null)
+    public function __set($prop, $value)
+    {
+        // if (array_key_exists($prop, $this->donnee)) {
+            $this->donnee[$prop] = $value;
+        // }
+    }
+
+    public function __get($prop)
+    {
+        // if (array_key_exists($prop, $this->donnee)) {
+            return $this->donnee[$prop];
+        // }
+    }
+
+
+
+    // public function __construct($data)
+    // {
+    //     foreach ($data as $key => $value) {
+
+    //         // error_log(print_r($data, 1));
+    //         // error_log(print_r($this->donnee["$key"] = $value, 1));
+    //         return $this->donnee[$key] = $value;
+    //     }
+    // }
+
+    public function create(Product $data, ?array $relation = null)
     {
         parent::create($data);
         return true;
     }
 }
-
