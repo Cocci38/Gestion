@@ -52,7 +52,7 @@ class ManagementController extends Controller
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
-        // $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
+        $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
         $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
         
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {

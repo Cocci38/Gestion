@@ -116,39 +116,37 @@ class Model
     {
 
         try {
-        // error_log(print_r($data, 1));die;
-        // error_log(print_r(gettype($data), 1));
-        $colonne = '';
-        $stringInter = '';
-        foreach ($this->donnee as $key => $value) {
-            // error_log(print_r($key, 1));
-            // error_log(print_r($value, 1));
-            // Si les value ne sont pas null et que les key est différent de table et de db
-            if ($value !== null && $key != 'table' && $key != 'db') {
+            $colonne = '';
+            $stringInter = '';
+            foreach ($this->donnee as $key => $value) {
                 // error_log(print_r($key, 1));
                 // error_log(print_r($value, 1));
-                $keys[] = $key;
-                $inter[] = ":" . $key;
-                // $values[] = $value;
+                // Si les value ne sont pas null et que les key est différent de table et de db
+                if ($value !== null && $key != 'table' && $key != 'db') {
+                    // error_log(print_r($key, 1));
+                    // error_log(print_r($value, 1));
+                    $keys[] = $key;
+                    $inter[] = ":" . $key;
+                    // $values[] = $value;
+                }
             }
-        }
-        $colonne = implode(",", $keys);
-        $stringInter = implode(",", $inter);
-        // error_log(print_r($colonne, 1));
-        // error_log(print_r($stringInter, 1));
-        $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
-        foreach ($this->donnee as $key => $value) {
-            // error_log(print_r($key, 1));
-            error_log(print_r($this->getteType($value), 1));
-            $select->bindValue(':' . $key, $value, $this->getteType($value));
-            // error_log($key, $value, $this->getteType($value));
-        }
-        $select->execute();
-        // if ($select->rowCount() > 0) {
-        //     error_log('probleme');
-        // } else {
-        //     error_log('pas de problème');
-        // }
+            $colonne = implode(",", $keys);
+            $stringInter = implode(",", $inter);
+            // error_log(print_r($colonne, 1));
+            // error_log(print_r($stringInter, 1));
+            $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
+            foreach ($this->donnee as $key => $value) {
+                // error_log(print_r($key, 1));
+                error_log(print_r($this->getteType($value), 1));
+                $select->bindValue(':' . $key, $value, $this->getteType($value));
+                // error_log($key, $value, $this->getteType($value));
+            }
+            $select->execute();
+            // if ($select->rowCount() > 0) {
+            //     error_log('probleme');
+            // } else {
+            //     error_log('pas de problème');
+            // }
         } catch (PDOException $exception) {
             echo "Erreur de connexion : " . $exception->getMessage();
         }
