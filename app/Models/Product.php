@@ -15,6 +15,7 @@ class Product extends Model
     protected $date;
     protected $categorie;
     protected $image;
+    public $id = 'id_produit';
     public $table = 'produits';
     protected $donnee = [];
 
@@ -136,9 +137,16 @@ class Product extends Model
     //     }
     // }
 
-    public function create(Product $data, ?array $relation = null)
+    public function create(Model $data, ?array $relation = null)
     {
         parent::create($data);
+        return true;
+    }
+
+    public function delete(int $id)
+    {
+        parent::delete($id);
+        
         return true;
     }
 }

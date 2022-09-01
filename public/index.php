@@ -27,6 +27,7 @@ $router->get('/produits/:id', 'App\Controllers\ManagementController@productId');
 $router->get('/ajout', 'App\Controllers\ManagementController@create');
 // Route pour traiter les données du formulaire
 $router->post('/ajout', 'App\Controllers\ManagementController@createProduct'); // Dans l'url on écrit form
+$router->post('/delete/:id', 'App\Controllers\ManagementController@delete');
 /**
  * On tente d'executer cette fonction, si cette fonction relève une erreur (ici aucune route ne match avec l'url)
  * On va pouvoir ratrapper notre exception qui est de classe Exception et lui passer  le message indiqué dans getMessage()

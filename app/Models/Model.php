@@ -11,6 +11,7 @@ class Model
 
     protected $db;
     protected $table;
+    protected $id;
 
     /**
      * Récupérer de la connexion à la bdd passé au constructeur
@@ -34,18 +35,22 @@ class Model
         return $select->fetchAll();
     }
 
-    public function readById(int $id_produit)
+    public function readById(int $id)
     {
+        // print_r($_GET);
         // Je transforme l'url ($_GET) en chaine de caractère
         $url = implode($_GET);
+        // print_r($url);
         // Avec explode(), je retourne un tableau de chaine de caractères en plusieurs morceaux selon le /
         // Avec en(), je récupère le dernier élément du tableau.
-        @$end = end(explode('/', $url));
-        $id_produit = htmlspecialchars(strip_tags(trim(stripslashes($end))));
+        // @$end = end(explode('/', $url));
+        $url = explode('/', $url);
+        $end = end($url);
+        $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
         // echo "<pre>",print_r($end, 1),"</pre>";
-        $select = $this->db->getPDO()->prepare("SELECT * FROM $this->table WHERE id_produit = $id_produit");
+        $select = $this->db->getPDO()->prepare("SELECT * FROM $this->table WHERE $this->id = ?");
         $select->setFetchMode(PDO::FETCH_CLASS, get_class($this), [$this->db]);
-        $select->execute();
+        $select->execute([$id]);
         return $select->fetch();
     }
 
@@ -112,7 +117,7 @@ class Model
     //         echo "Erreur de connexion : " . $exception->getMessage();
     //     }
     // }
-    public function create(Product $data, ?array $relations = null)
+    public function create(Model $data, ?array $relations = null)
     {
 
         try {
@@ -150,5 +155,20 @@ class Model
         } catch (PDOException $exception) {
             echo "Erreur de connexion : " . $exception->getMessage();
         }
+    }
+
+    public function delete(int $id)
+    {
+        // Je transforme l'url ($_GET) en chaine de caractère
+        $url = implode($_GET);
+        // Avec explode(), je retourne un tableau de chaine de caractères en plusieurs morceaux selon le /
+        // Avec en(), je récupère le dernier élément du tableau.
+        // @$end = end(explode('/', $url));
+        $url = explode('/', $url);
+        $end = end($url);
+        $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
+        $delete = $this->db->getPDO()->prepare("DELETE  FROM $this->table WHERE $this->id = ?");
+        $delete->execute([$id]);
+        $supp = $delete->fetch();
     }
 }

@@ -74,4 +74,14 @@ class ManagementController extends Controller
             }
         }
     }
+
+    public function delete(int $id)
+    {
+        $product = new Product($this->getDB());
+        $delete = $product->delete($id);
+        
+        if($delete){
+            return header("Location: /gestion/produits");
+        }
+    }
 }
