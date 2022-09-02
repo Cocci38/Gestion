@@ -160,6 +160,13 @@ class Model
     public function update(int $id, Model $data, ?array $relations = null)
     {
         try {
+            $url = implode($_GET);
+            // Avec explode(), je retourne un tableau de chaine de caractères en plusieurs morceaux selon le /
+            // Avec en(), je récupère le dernier élément du tableau.
+            // @$end = end(explode('/', $url));
+            $url = explode('/', $url);
+            $end = end($url);
+            $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
             $keys = [];
             $values = [];
 
