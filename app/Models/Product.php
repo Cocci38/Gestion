@@ -143,6 +143,13 @@ class Product extends Model
         return true;
     }
 
+    public function update(int $id, Model $data, ?array $relations = null)
+    {
+        parent::update($id, $data);
+        
+        return true;
+    }
+
     public function delete(int $id)
     {
         parent::delete($id);

@@ -54,7 +54,7 @@ class ManagementController extends Controller
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
         $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
-        
+
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
 
             $product = new Product($this->getDB());
@@ -75,12 +75,42 @@ class ManagementController extends Controller
         }
     }
 
+    public function update(int $id)
+    {
+        $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
+        $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
+        $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
+        $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
+        $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+
+        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
+            $product = new Product($this->getDB());
+
+            $product->title = $title;
+            $product->description = $description;
+            $product->price = $price;
+            $product->date = $date;
+            $product->categorie = $categorie;
+
+            $updateProduct = $product;
+
+            //echo "<pre>",print_r($_FILES),"</pre>"; die();
+
+            $resultat = $product->update($id, $updateProduct);
+            //echo "<pre>",print_r($resultat),"</pre>";  die();
+            if ($resultat) {
+                return header("Location: /Annonces/produits/$id");
+            }
+        }
+    }
+
     public function delete(int $id)
     {
         $product = new Product($this->getDB());
         $delete = $product->delete($id);
-        
-        if($delete){
+
+        if ($delete) {
             return header("Location: /gestion/produits");
         }
     }

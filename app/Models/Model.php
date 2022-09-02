@@ -157,18 +157,43 @@ class Model
         }
     }
 
+    public function update(int $id, Model $data, ?array $relations = null)
+    {
+        try {
+            $keys = [];
+            $values = [];
+
+            foreach ($data as $key => $value) {
+                if ($value != null && $key != 'table' && $key != 'db') {
+                    $keys[] = "$key = ?";
+                    $values[] = $value;
+                }
+            }
+            $values[] = $id;
+            $keys = implode(",", $keys);
+            $update = $this->db->getPDO()->prepare("UPDATE {$this->table} SET $keys WHERE $this->id = ?");
+            $update->execute($values);
+        } catch (PDOException $exception) {
+            echo "Erreur de connexion : " . $exception->getMessage();
+        }
+    }
+
     public function delete(int $id)
     {
-        // Je transforme l'url ($_GET) en chaine de caractère
-        $url = implode($_GET);
-        // Avec explode(), je retourne un tableau de chaine de caractères en plusieurs morceaux selon le /
-        // Avec en(), je récupère le dernier élément du tableau.
-        // @$end = end(explode('/', $url));
-        $url = explode('/', $url);
-        $end = end($url);
-        $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
-        $delete = $this->db->getPDO()->prepare("DELETE  FROM $this->table WHERE $this->id = ?");
-        $delete->execute([$id]);
-        $supp = $delete->fetch();
+        try {
+            // Je transforme l'url ($_GET) en chaine de caractère
+            $url = implode($_GET);
+            // Avec explode(), je retourne un tableau de chaine de caractères en plusieurs morceaux selon le /
+            // Avec en(), je récupère le dernier élément du tableau.
+            // @$end = end(explode('/', $url));
+            $url = explode('/', $url);
+            $end = end($url);
+            $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
+            $delete = $this->db->getPDO()->prepare("DELETE  FROM $this->table WHERE $this->id = ?");
+            $delete->execute([$id]);
+            $supp = $delete->fetch();
+        } catch (PDOException $exception) {
+            echo "Erreur de connexion : " . $exception->getMessage();
+        }
     }
 }
