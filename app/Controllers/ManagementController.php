@@ -48,7 +48,8 @@ class ManagementController extends Controller
     public function createProduct()
     {
         // error_log($_POST['date']);
-        $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
+        $id =
+            $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
@@ -85,6 +86,7 @@ class ManagementController extends Controller
 
     public function update(int $id)
     {
+        // error_log(print_r($_POST, 1));
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
@@ -94,7 +96,7 @@ class ManagementController extends Controller
 
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
             $product = new Product($this->getDB());
-
+            error_log(print_r($product, 1));
             $product->title = $title;
             $product->description = $description;
             $product->price = $price;
@@ -110,6 +112,8 @@ class ManagementController extends Controller
             if ($resultat) {
                 return header("Location: /gestion/produits/$id");
             }
+        } else {
+            return header('Location: /gestion/update/' . $id);
         }
     }
 
