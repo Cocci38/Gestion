@@ -167,19 +167,34 @@ class Model
             $url = explode('/', $url);
             $end = end($url);
             $id = htmlspecialchars(strip_tags(trim(stripslashes($end))));
+            // error_log($id);
+            // error_log(print_r($this->donnee));die;
             $keys = [];
-            $values = [];
-
-            foreach ($data as $key => $value) {
+            // $values = [];
+            foreach ($this->donnee as $key => $value) {
                 if ($value != null && $key != 'table' && $key != 'db') {
-                    $keys[] = "$key = ?";
-                    $values[] = $value;
+                    // error_log(print_r($this->donnee, 1));
+                    // $keys[] = $key;
+                    // $values[] = $value;
+                    // error_log(print_r($keys, 1));
+                    // error_log(print_r($values, 1));
+                    $valeurs = $key . " = " . "'$value'";
+                    $keys[] = $valeurs;
+                    // error_log(print_r($keys, 1));
+                    // error_log($valeurs);
                 }
             }
-            $values[] = $id;
-            $keys = implode(",", $keys);
-            $update = $this->db->getPDO()->prepare("UPDATE {$this->table} SET $keys WHERE $this->id = ?");
-            $update->execute($values);
+            // 
+            // error_log(print_r($values));
+
+
+            $keys = implode(", ", $keys);
+            // error_log(print_r($keys));
+            // error_log(print_r($tab));
+            $update = $this->db->getPDO()->prepare("UPDATE {$this->table} SET $keys  WHERE {$this->id} = $id");
+            // error_log(print_r($update));die;
+            $update->execute();
+            
         } catch (PDOException $exception) {
             echo "Erreur de connexion : " . $exception->getMessage();
         }

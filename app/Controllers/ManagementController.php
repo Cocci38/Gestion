@@ -75,7 +75,7 @@ class ManagementController extends Controller
         }
     }
 
-    public function update(int $id)
+    public function updateProduct(int $id)
     {
         // Retourne le formulaire de modification
         $product = new Product($this->getDB());
@@ -83,7 +83,7 @@ class ManagementController extends Controller
         return $this->view('products.form', compact('product'));
     }
 
-    public function updateProduct(int $id)
+    public function update(int $id)
     {
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
@@ -102,7 +102,7 @@ class ManagementController extends Controller
             $product->categorie = $categorie;
 
             $updateProduct = $product;
-
+            // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
             //echo "<pre>",print_r($_FILES),"</pre>"; die();
 
             $resultat = $product->update($id, $updateProduct);

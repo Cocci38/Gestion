@@ -25,10 +25,10 @@ $router->get('/produits/:id', 'App\Controllers\ManagementController@productId');
 // $router->get('/ajout', 'App\Controllers\ManagementController@form'); // Dans l'url on écrit form
 // Route pour renvoyer le formulaire
 $router->get('/ajout', 'App\Controllers\ManagementController@create');
-$router->get('/update/:id', 'App\Controllers\ManagementController@update');
+$router->get('/update/:id', 'App\Controllers\ManagementController@updateProduct');
 // Route pour traiter les données du formulaire
 $router->post('/ajout', 'App\Controllers\ManagementController@createProduct'); // Dans l'url on écrit form
-$router->post('/update/:id', 'App\Controllers\ManagementController@updateProduct');
+$router->post('/update/:id', 'App\Controllers\ManagementController@update');
 $router->post('/delete/:id', 'App\Controllers\ManagementController@delete');
 /**
  * On tente d'executer cette fonction, si cette fonction relève une erreur (ici aucune route ne match avec l'url)
