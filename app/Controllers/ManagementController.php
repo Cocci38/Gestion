@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Product;
+use App\Models\Categorie;
 
 class ManagementController extends Controller
 {
@@ -35,7 +36,8 @@ class ManagementController extends Controller
 
     public function create()
     {
-        return $this->view('products.form');
+        $categories = (new Categorie($this->getDB()))->read();
+        return $this->view('products.form', compact('categorie'));
     }
 
     private function is_date_valid($date, $format = "Y-m-d")
@@ -48,8 +50,7 @@ class ManagementController extends Controller
     public function createProduct()
     {
         // error_log($_POST['date']);
-        $id =
-            $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
+        $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));

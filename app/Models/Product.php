@@ -39,7 +39,7 @@ class Product extends Model
         return $this->id_produit;
     }
 
-    public function setid_produit($id_produit)
+    public function setIdProduct($id_produit)
     {
         $this->id_produit = $id_produit;
         return $this;
@@ -137,9 +137,25 @@ class Product extends Model
     //     }
     // }
 
-    public function create(Model $data, ?array $relation = null)
+    public function getCat()
+    {
+        $select = $this->db->getPDO()->prepare("SELECT c.* FROM categories c INNER JOIN produits_categories pc ON pc.categorie_id = c.id_categorie WHERE pc.produit_id = $this->id_produit");
+        $select->execute();
+        return $select->fetchAll(PDO::FETCH_OBJ);
+        // return $this->db->getPDO()->prepare("SELECT c.* FROM categories c INNER JOIN produits_categories pc ON pc.categorie_id = c.id_categorie WHERE pc.produit_id = ?", [$this->id_produit]);
+    }
+
+    public function create(Model $data, ?array $relations = null)
     {
         parent::create($data);
+
+        $id = $this->db->getPDO()->lastInsertId();
+
+        foreach ($relations as $catId) {
+            $stmt = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
+            $stmt->execute([$id, $catId]);
+        }
+
         return true;
     }
 
