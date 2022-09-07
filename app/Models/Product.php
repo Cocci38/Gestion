@@ -103,14 +103,14 @@ class Product extends Model
     public function __set($prop, $value)
     {
         // if (array_key_exists($prop, $this->donnee)) {
-            $this->donnee[$prop] = $value;
+        $this->donnee[$prop] = $value;
         // }
     }
 
     public function __get($prop)
     {
         // if (array_key_exists($prop, $this->donnee)) {
-            return $this->donnee[$prop];
+        return $this->donnee[$prop];
         // }
     }
 
@@ -129,10 +129,10 @@ class Product extends Model
         parent::create($data);
 
         $id = $this->db->getPDO()->lastInsertId();
-
+        $id = htmlspecialchars(trim(strip_tags(stripslashes($id))));
         foreach ($relations as $catId) {
-            $stmt = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
-            $stmt->execute([$id, $catId]);
+            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
+            $insert->execute([$id, $catId]);
         }
 
         return true;
@@ -141,14 +141,23 @@ class Product extends Model
     public function update(int $id, Model $data, ?array $relations = null)
     {
         parent::update($id, $data);
-        
-        return true;
+
+        $delete = $this->db->getPDO()->prepare("DELETE FROM produits_categories WHERE produit_id = ?");
+        $result = $delete->execute([$id]);
+        foreach ($relations as $catId) {
+            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
+            $insert->execute([$id, $catId]);
+        }
+
+        if ($result) {
+            return true;
+        }
     }
 
     public function delete(int $id)
     {
         parent::delete($id);
-        
+
         return true;
     }
 }

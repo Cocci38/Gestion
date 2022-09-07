@@ -66,7 +66,6 @@ class ManagementController extends Controller
             $product->date = $date;
             $tags[] = $categorie;
             // error_log(print_r($product, 1));
-            // echo $produit;
             // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
             $newProduct = $product;
             // error_log(print_r($newProduct, 1));
@@ -98,19 +97,18 @@ class ManagementController extends Controller
 
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
             $product = new Product($this->getDB());
-            error_log(print_r($product, 1));
+            // error_log(print_r($product, 1));
             $product->title = $title;
             $product->description = $description;
             $product->price = $price;
             $product->date = $date;
-            $product->categorie = $categorie;
-
+            $tags[] = $categorie;
             $updateProduct = $product;
             // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
             //echo "<pre>",print_r($_FILES),"</pre>"; die();
 
-            $resultat = $product->update($id, $updateProduct);
-            //echo "<pre>",print_r($resultat),"</pre>";  die();
+            $resultat = $product->update($id, $updateProduct, $tags);
+            // echo "<pre>",print_r($resultat, 1),"</pre>";  die();
             if ($resultat) {
                 return header("Location: /gestion/produits/$id");
             }
