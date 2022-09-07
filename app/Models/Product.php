@@ -158,6 +158,11 @@ class Product extends Model
     {
         parent::delete($id);
 
-        return true;
+        $delete = $this->db->getPDO()->prepare("DELETE FROM produits_categories WHERE produit_id = ?");
+        $result = $delete->execute([$id]);
+
+        if ($result) {
+            return true;
+        }
     }
 }
