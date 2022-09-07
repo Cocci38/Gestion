@@ -54,7 +54,7 @@ class Model
         return $select->fetch();
     }
 
-    protected function getteType($value)
+    private function getteType($value)
     {
         $type = null;
         switch (gettype($value)) {
@@ -68,58 +68,8 @@ class Model
         // return $type;
     }
 
-    // public function create(Product $data, ?array $relations = null)
-    // {
-
-    //     error_log(print_r($data, 1));
-    //     try {
-    //         $colonne = '';
-    //         $stringInter = '';
-    //         foreach ($data as $key => $value) {
-    //             // Si les value ne sont pas null et que les key est différent de table et de db
-    //             if (gettype($value) == 'integer' || gettype($value) == 'string') {
-    //                 if ($value !== null && $key != 'table' && $key != 'db') {
-    //                     $keys[] = $key;
-    //                     $inter[] = ":" . $key;
-    //                     // $values[] = $value;
-    //                 }
-    //             }
-    //         }
-
-    //         $colonne = implode(",", $keys);
-    //         $stringInter = implode(",", $inter);
-
-    //         // error_log(print_r($colonne, 1));
-    //         // error_log(print_r($stringInter, 1));
-
-    //         $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
-    //         // echo "<pre>", print_r($keys, 1), "</pre>";
-    //         $title = $data->getTitle();
-    //         $description =  $data->getDescription();
-    //         $price = $data->getPrice();
-    //         $date = $data->getDate();
-    //         $categorie = $data->getCategorie();
-    //         // error_log($data->getTitle());
-    //         // error_log($data->getDescription());
-    //         $select->bindParam(':title', $title, PDO::PARAM_STR);
-    //         $select->bindParam(':description', $description, PDO::PARAM_STR);
-    //         $select->bindParam(':price', $price, PDO::PARAM_STR);
-    //         $select->bindParam(':date', $date, PDO::PARAM_STR);
-    //         $select->bindParam(':categorie', $categorie, PDO::PARAM_STR);
-    //         error_log(print_r($select, 1));
-    //         $select->execute();
-    //         if ($select->rowCount() > 0) {
-    //             error_log('pas de problème');
-    //         } else {
-    //             error_log('problème');
-    //         }
-    //     } catch (PDOException $exception) {
-    //         echo "Erreur de connexion : " . $exception->getMessage();
-    //     }
-    // }
     public function create(Model $data, ?array $relations = null)
     {
-
         try {
             $colonne = '';
             $stringInter = '';
@@ -142,7 +92,7 @@ class Model
             $select = $this->db->getPDO()->prepare("INSERT INTO {$this->table} ($colonne) VALUES ($stringInter)");
             foreach ($this->donnee as $key => $value) {
                 // error_log(print_r($key, 1));
-                error_log(print_r($this->getteType($value), 1));
+                // error_log(print_r($this->getteType($value), 1));
                 $select->bindValue(':' . $key, $value, $this->getteType($value));
                 // error_log($key, $value, $this->getteType($value));
             }

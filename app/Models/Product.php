@@ -13,7 +13,7 @@ class Product extends Model
     protected $description;
     protected $price;
     protected $date;
-    protected $categorie;
+    // protected $categorie;
     protected $image;
     public $id = 'id_produit';
     public $table = 'produits';
@@ -130,6 +130,12 @@ class Product extends Model
 
         $id = $this->db->getPDO()->lastInsertId();
         $id = htmlspecialchars(trim(strip_tags(stripslashes($id))));
+
+        $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories");
+        $select->execute();
+        $result = $select->fetchAll(PDO::FETCH_OBJ);
+
+        print_r($result);die;
         foreach ($relations as $catId) {
             $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES ($id, $catId)");
             $insert->bindValue('produit_id', $id, PDO::PARAM_INT);

@@ -49,7 +49,6 @@ class ManagementController extends Controller
     }
     public function createProduct()
     {
-        // error_log(print_r($_POST));
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
@@ -60,10 +59,13 @@ class ManagementController extends Controller
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
 
             $product = new Product($this->getDB());
+            // echo "<pre>", print_r($product, 1), "</pre>";
             $product->title = $title;
             $product->description = $description;
             $product->price = $price;
             $product->date = $date;
+            // $cat = $product->getCat();
+            // error_log($cat);die;
             $tags[] = $categorie;
             // error_log(print_r($product, 1));
             // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
