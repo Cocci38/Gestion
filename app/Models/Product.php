@@ -89,17 +89,6 @@ class Product extends Model
         return $this;
     }
 
-    public function getCategorie()
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie($categorie)
-    {
-        $this->categorie = $categorie;
-        return $this;
-    }
-
     public function getImage()
     {
         return $this->image;
@@ -125,24 +114,14 @@ class Product extends Model
         // }
     }
 
-
-
-    // public function __construct($data)
-    // {
-    //     foreach ($data as $key => $value) {
-
-    //         // error_log(print_r($data, 1));
-    //         // error_log(print_r($this->donnee["$key"] = $value, 1));
-    //         return $this->donnee[$key] = $value;
-    //     }
-    // }
-
+    /**
+     * Méthode pour afficher les catégories
+     */
     public function getCat()
     {
         $select = $this->db->getPDO()->prepare("SELECT c.* FROM categories c INNER JOIN produits_categories pc ON pc.categorie_id = c.id_categorie WHERE pc.produit_id = $this->id_produit");
         $select->execute();
         return $select->fetchAll(PDO::FETCH_OBJ);
-        // return $this->db->getPDO()->prepare("SELECT c.* FROM categories c INNER JOIN produits_categories pc ON pc.categorie_id = c.id_categorie WHERE pc.produit_id = ?", [$this->id_produit]);
     }
 
     public function create(Model $data, ?array $relations = null)

@@ -46,13 +46,13 @@ class Categorie extends Model
         // }
     }
 
-    public function getProduct()
-    {
-        // $select = $this->db->getPDO()->prepare("SELECT p.* FROM produits p INNER JOIN produits_categories pc ON pc.produit_id = p.id_produit WHERE pc.categorie_id = ?");
-        // $select->setFetchMode(PDO::FETCH_CLASS, get_class($this), [$this->db]);
-        // $select->execute();
-        // return $select->fetchAll();
-
-        return $this->db->getPDO()->prepare("SELECT p.* FROM produits p INNER JOIN produits_categories pc ON pc.produit_id = p.id_produit WHERE pc.categorie_id = ?", [$this->id_categorie]);
-    }
+    /**
+     * Méthode pour afficher les produits par catégorie
+     */
+    // public function getProduct()
+    // {
+    //     $select = $this->db->getPDO()->prepare("SELECT p.* FROM produits p INNER JOIN produits_categories pc ON pc.produit_id = p.id_produit WHERE pc.categorie_id = $this->id_categorie");
+    //     $select->execute();
+    //     return $select->fetchAll(PDO::FETCH_OBJ);
+    // }
 }

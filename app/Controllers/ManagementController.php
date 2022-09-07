@@ -37,7 +37,7 @@ class ManagementController extends Controller
     public function create()
     {
         $categories = (new Categorie($this->getDB()))->read();
-        return $this->view('products.form', compact('categorie'));
+        return $this->view('products.form', compact('categories'));
     }
 
     private function is_date_valid($date, $format = "Y-m-d")
@@ -82,7 +82,8 @@ class ManagementController extends Controller
         // Retourne le formulaire de modification
         $product = new Product($this->getDB());
         $product = $product->readById($id);
-        return $this->view('products.form', compact('product'));
+        $categories = (new Categorie($this->getDB()))->read();
+        return $this->view('products.form', compact('product', 'categories'));
     }
 
     public function update(int $id)
