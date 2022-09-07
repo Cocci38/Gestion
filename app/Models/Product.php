@@ -131,8 +131,10 @@ class Product extends Model
         $id = $this->db->getPDO()->lastInsertId();
         $id = htmlspecialchars(trim(strip_tags(stripslashes($id))));
         foreach ($relations as $catId) {
-            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
-            $insert->execute([$id, $catId]);
+            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES ($id, $catId)");
+            $insert->bindValue('produit_id', $id, PDO::PARAM_INT);
+            $insert->bindValue('categorie_id', $catId, PDO::PARAM_INT);
+            $insert->execute();
         }
 
         return true;
@@ -142,16 +144,13 @@ class Product extends Model
     {
         parent::update($id, $data);
 
-        $delete = $this->db->getPDO()->prepare("DELETE FROM produits_categories WHERE produit_id = ?");
-        $result = $delete->execute([$id]);
         foreach ($relations as $catId) {
-            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES (?, ?)");
-            $insert->execute([$id, $catId]);
+            $update = $this->db->getPDO()->prepare("UPDATE produits_categories SET categorie_id = $catId WHERE produit_id = $id");
+            $update->bindValue('categorie_id', $catId, PDO::PARAM_INT);
+            $update->execute();
         }
-
-        if ($result) {
             return true;
-        }
+
     }
 
     public function delete(int $id)

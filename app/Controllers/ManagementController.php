@@ -105,7 +105,7 @@ class ManagementController extends Controller
             $tags[] = $categorie;
             $updateProduct = $product;
             // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            //echo "<pre>",print_r($_FILES),"</pre>"; die();
+            // echo "<pre>",print_r($_FILES),"</pre>"; die();
 
             $resultat = $product->update($id, $updateProduct, $tags);
             // echo "<pre>",print_r($resultat, 1),"</pre>";  die();

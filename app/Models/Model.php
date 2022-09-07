@@ -54,7 +54,7 @@ class Model
         return $select->fetch();
     }
 
-    private function getteType($value)
+    protected function getteType($value)
     {
         $type = null;
         switch (gettype($value)) {
@@ -174,7 +174,7 @@ class Model
                     // error_log(print_r($this->donnee, 1));
                     // error_log(print_r($key, 1));
                     // error_log(print_r($value, 1));
-                    $keys[] = $key . " = " . "'$value'";
+                    $keys[] = $key . ' = "' . $value .'"';
                     // error_log(print_r($keys, 1));
                 }
             }
@@ -186,7 +186,7 @@ class Model
             // error_log(print_r($tab));
             $update = $this->db->getPDO()->prepare("UPDATE {$this->table} SET $keys WHERE {$this->id} = $id");
             foreach ($this->donnee as $key => $value) {
-                error_log(print_r($this->getteType($value), 1));
+                // error_log(print_r($this->getteType($value), 1));
                 $update->bindValue(':' . $key, $value, $this->getteType($value));
             }
             error_log(print_r($update));
