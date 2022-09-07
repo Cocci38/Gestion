@@ -49,13 +49,13 @@ class ManagementController extends Controller
     }
     public function createProduct()
     {
-        // error_log($_POST['date']);
+        // error_log(print_r($_POST));
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
-        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
 
@@ -64,13 +64,13 @@ class ManagementController extends Controller
             $product->description = $description;
             $product->price = $price;
             $product->date = $date;
-            $product->categorie = $categorie;
+            $tags[] = $categorie;
             // error_log(print_r($product, 1));
             // echo $produit;
             // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
             $newProduct = $product;
             // error_log(print_r($newProduct, 1));
-            $result = $product->create($newProduct);
+            $result = $product->create($newProduct, $tags);
             if ($result) {
                 return header('Location: /gestion/produits');
             }
@@ -94,7 +94,7 @@ class ManagementController extends Controller
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
-        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
         if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
             $product = new Product($this->getDB());

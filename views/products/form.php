@@ -15,9 +15,10 @@
     <input type="date" name="date" value="<?= isset($params['product']) ? $params['product']->getDate() : " " ?>">
 
     <label for="Categorie">Categorie:</label><br>
-    <select name="categorie" id="categorie">
-    
+    <select name="categorie_id" id="categorie">
+    <option hidden><?= isset($params['product']) ? "" : " Liste des catégories " ?></option>
         <?php foreach ($params['categories'] as $categories) : ?>
+
             <option value="<?= $categories->id_categorie ?>" 
             <?php if (isset($params['product'])) : ?>
                 <?php foreach ($params['product']->getCat() as $productCat) {
