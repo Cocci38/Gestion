@@ -57,15 +57,20 @@ class ManagementController extends Controller
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
         $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
-        $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories");
-        $select->execute();
-        $result = $select->fetchAll(PDO::FETCH_OBJ);
+        if (
+            preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title)
+            && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)
+        ) {
+            $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories WHERE id_categorie = $categorie");
+            $select->bindValue('id_categorie', $categorie, PDO::PARAM_INT);
+            $select->execute();
+            $result = $select->fetchAll(PDO::FETCH_OBJ);
+            // error_log(print_r($result, 1));
+            if ($result) {
+                // foreach ($result as $key => $value) {
+                // error_log(print_r($value->id_categorie, 1));
 
-        // error_log(print_r($result, 1));
-        foreach ($result as $key => $value) {
-            // error_log(print_r($value->id_categorie, 1));
-            if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description) && $value->id_categorie == $categorie) {
-                // error_log('je passe par là');
+                error_log('je passe par là');
                 $product = new Product($this->getDB());
                 // echo "<pre>", print_r($product, 1), "</pre>";
                 $product->title = $title;
@@ -80,12 +85,15 @@ class ManagementController extends Controller
                 $newProduct = $product;
                 // error_log(print_r($newProduct, 1));
                 $result = $product->create($newProduct, $tags);
-                if ($result) {
-                    return header('Location: /gestion/produits');
-                }
+
+                return header('Location: /gestion/produits');
             } else {
+                error_log('rater pour cette fois');
                 return header('Location: /gestion/ajout');
             }
+        } else {
+            error_log('rater pour cette fois');
+            return header('Location: /gestion/ajout');
         }
     }
 
@@ -108,25 +116,38 @@ class ManagementController extends Controller
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
         $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
-        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
-            $product = new Product($this->getDB());
-            // error_log(print_r($product, 1));
-            $product->title = $title;
-            $product->description = $description;
-            $product->price = $price;
-            $product->date = $date;
-            $tags[] = $categorie;
-            $updateProduct = $product;
-            // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            // echo "<pre>",print_r($_FILES),"</pre>"; die();
+        if (
+            preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title)
+            && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)
+        ) {
+            $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories WHERE id_categorie = $categorie");
+            $select->bindValue('id_categorie', $categorie, PDO::PARAM_INT);
+            $select->execute();
+            $result = $select->fetch(PDO::FETCH_OBJ);
+            // error_log(print_r($result, 1));
+            if ($result) {
+                $product = new Product($this->getDB());
+                // error_log(print_r($product, 1));
+                $product->title = $title;
+                $product->description = $description;
+                $product->price = $price;
+                $product->date = $date;
+                $tags[] = $categorie;
+                $updateProduct = $product;
+                // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+                // echo "<pre>",print_r($_FILES),"</pre>"; die();
 
-            $resultat = $product->update($id, $updateProduct, $tags);
-            // echo "<pre>",print_r($resultat, 1),"</pre>";  die();
-            if ($resultat) {
+                $resultat = $product->update($id, $updateProduct, $tags);
+                // echo "<pre>",print_r($resultat, 1),"</pre>";  die();
+
                 return header("Location: /gestion/produits/$id");
+            } else {
+                error_log('rater pour cette fois');
+                return header('Location: /gestion/ajout');
             }
         } else {
-            return header('Location: /gestion/update/' . $id);
+            error_log('rater pour cette fois');
+            return header('Location: /gestion/ajout');
         }
     }
 
