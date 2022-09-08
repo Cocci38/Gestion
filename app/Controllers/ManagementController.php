@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use PDO;
 use App\Models\Product;
 use App\Models\Categorie;
 
@@ -56,24 +57,34 @@ class ManagementController extends Controller
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
         $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
-        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
+        $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories");
+        $select->execute();
+        $result = $select->fetchAll(PDO::FETCH_OBJ);
 
-            $product = new Product($this->getDB());
-            // echo "<pre>", print_r($product, 1), "</pre>";
-            $product->title = $title;
-            $product->description = $description;
-            $product->price = $price;
-            $product->date = $date;
-            // $cat = $product->getCat();
-            // error_log($cat);die;
-            $tags[] = $categorie;
-            // error_log(print_r($product, 1));
-            // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            $newProduct = $product;
-            // error_log(print_r($newProduct, 1));
-            $result = $product->create($newProduct, $tags);
-            if ($result) {
-                return header('Location: /gestion/produits');
+        // error_log(print_r($result, 1));
+        foreach ($result as $key => $value) {
+            // error_log(print_r($value->id_categorie, 1));
+            if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description) && $value->id_categorie == $categorie) {
+                // error_log('je passe par là');
+                $product = new Product($this->getDB());
+                // echo "<pre>", print_r($product, 1), "</pre>";
+                $product->title = $title;
+                $product->description = $description;
+                $product->price = $price;
+                $product->date = $date;
+                // $cat = $product->getCat();
+                // error_log($cat);die;
+                $tags[] = $categorie;
+                // error_log(print_r($product, 1));
+                // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+                $newProduct = $product;
+                // error_log(print_r($newProduct, 1));
+                $result = $product->create($newProduct, $tags);
+                if ($result) {
+                    return header('Location: /gestion/produits');
+                }
+            } else {
+                return header('Location: /gestion/ajout');
             }
         }
     }
