@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use PDO;
 use App\Models\Product;
+use App\Models\Categorie;
 
 class ManagementController extends Controller
 {
@@ -35,7 +37,8 @@ class ManagementController extends Controller
 
     public function create()
     {
-        return $this->view('products.form');
+        $categories = (new Categorie($this->getDB()))->read();
+        return $this->view('products.form', compact('categories'));
     }
 
     private function is_date_valid($date, $format = "Y-m-d")
@@ -47,32 +50,50 @@ class ManagementController extends Controller
     }
     public function createProduct()
     {
-        // error_log($_POST['date']);
-        $id =
-            $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
+        $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
-        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
-        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
-
-            $product = new Product($this->getDB());
-            $product->title = $title;
-            $product->description = $description;
-            $product->price = $price;
-            $product->date = $date;
-            $product->categorie = $categorie;
-            // error_log(print_r($product, 1));
-            // echo $produit;
-            // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            $newProduct = $product;
-            // error_log(print_r($newProduct, 1));
-            $result = $product->create($newProduct);
+        if (
+            preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title)
+            && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)
+        ) {
+            $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories WHERE id_categorie = $categorie");
+            $select->bindValue('id_categorie', $categorie, PDO::PARAM_INT);
+            $select->execute();
+            $result = $select->fetchAll(PDO::FETCH_OBJ);
+            // error_log(print_r($result, 1));
             if ($result) {
+                // foreach ($result as $key => $value) {
+                // error_log(print_r($value->id_categorie, 1));
+
+                error_log('je passe par là');
+                $product = new Product($this->getDB());
+                // echo "<pre>", print_r($product, 1), "</pre>";
+                $product->title = $title;
+                $product->description = $description;
+                $product->price = $price;
+                $product->date = $date;
+                // $cat = $product->getCat();
+                // error_log($cat);die;
+                $tags[] = $categorie;
+                // error_log(print_r($product, 1));
+                // $newProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+                $newProduct = $product;
+                // error_log(print_r($newProduct, 1));
+                $result = $product->create($newProduct, $tags);
+
                 return header('Location: /gestion/produits');
+            } else {
+                error_log('rater pour cette fois');
+                return header('Location: /gestion/ajout');
             }
+        } else {
+            error_log('rater pour cette fois');
+            return header('Location: /gestion/ajout');
         }
     }
 
@@ -81,7 +102,8 @@ class ManagementController extends Controller
         // Retourne le formulaire de modification
         $product = new Product($this->getDB());
         $product = $product->readById($id);
-        return $this->view('products.form', compact('product'));
+        $categories = (new Categorie($this->getDB()))->read();
+        return $this->view('products.form', compact('product', 'categories'));
     }
 
     public function update(int $id)
@@ -92,28 +114,40 @@ class ManagementController extends Controller
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
         $date = htmlspecialchars(trim(strip_tags(stripslashes($_POST['date']))));
         $date = ($this->is_date_valid($date) ? $date : date('Y-m-d'));
-        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie']))));
+        $categorie = htmlspecialchars(trim(strip_tags(stripslashes($_POST['categorie_id']))));
 
-        if (preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title) && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)) {
-            $product = new Product($this->getDB());
-            error_log(print_r($product, 1));
-            $product->title = $title;
-            $product->description = $description;
-            $product->price = $price;
-            $product->date = $date;
-            $product->categorie = $categorie;
+        if (
+            preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{3,}$#", $title)
+            && preg_match("#^[a-zA-Z0-9-\' æœçéàèùâêîôûëïüÿÂÊÎÔÛÄËÏÖÜÀÆÇÉÈŒÙ]{10,}$#", $description)
+        ) {
+            $select = $this->db->getPDO()->prepare("SELECT id_categorie FROM categories WHERE id_categorie = $categorie");
+            $select->bindValue('id_categorie', $categorie, PDO::PARAM_INT);
+            $select->execute();
+            $result = $select->fetch(PDO::FETCH_OBJ);
+            // error_log(print_r($result, 1));
+            if ($result) {
+                $product = new Product($this->getDB());
+                // error_log(print_r($product, 1));
+                $product->title = $title;
+                $product->description = $description;
+                $product->price = $price;
+                $product->date = $date;
+                $tags[] = $categorie;
+                $updateProduct = $product;
+                // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
+                // echo "<pre>",print_r($_FILES),"</pre>"; die();
 
-            $updateProduct = $product;
-            // $updateProduct = $product->setTitle($title)->setDescription($description)->setPrice($price)->setDate($date)->setCategorie($categorie);
-            //echo "<pre>",print_r($_FILES),"</pre>"; die();
+                $resultat = $product->update($id, $updateProduct, $tags);
+                // echo "<pre>",print_r($resultat, 1),"</pre>";  die();
 
-            $resultat = $product->update($id, $updateProduct);
-            //echo "<pre>",print_r($resultat),"</pre>";  die();
-            if ($resultat) {
                 return header("Location: /gestion/produits/$id");
+            } else {
+                error_log('rater pour cette fois');
+                return header('Location: /gestion/ajout');
             }
         } else {
-            return header('Location: /gestion/update/' . $id);
+            error_log('rater pour cette fois');
+            return header('Location: /gestion/ajout');
         }
     }
 

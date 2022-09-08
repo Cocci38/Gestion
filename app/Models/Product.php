@@ -13,7 +13,7 @@ class Product extends Model
     protected $description;
     protected $price;
     protected $date;
-    protected $categorie;
+    // protected $categorie;
     protected $image;
     public $id = 'id_produit';
     public $table = 'produits';
@@ -39,7 +39,7 @@ class Product extends Model
         return $this->id_produit;
     }
 
-    public function setid_produit($id_produit)
+    public function setIdProduct($id_produit)
     {
         $this->id_produit = $id_produit;
         return $this;
@@ -89,17 +89,6 @@ class Product extends Model
         return $this;
     }
 
-    public function getCategorie()
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie($categorie)
-    {
-        $this->categorie = $categorie;
-        return $this;
-    }
-
     public function getImage()
     {
         return $this->image;
@@ -114,46 +103,65 @@ class Product extends Model
     public function __set($prop, $value)
     {
         // if (array_key_exists($prop, $this->donnee)) {
-            $this->donnee[$prop] = $value;
+        $this->donnee[$prop] = $value;
         // }
     }
 
     public function __get($prop)
     {
         // if (array_key_exists($prop, $this->donnee)) {
-            return $this->donnee[$prop];
+        return $this->donnee[$prop];
         // }
     }
 
+    /**
+     * Méthode pour afficher les catégories
+     */
+    public function getCat()
+    {
+        $select = $this->db->getPDO()->prepare("SELECT c.* FROM categories c INNER JOIN produits_categories pc ON pc.categorie_id = c.id_categorie WHERE pc.produit_id = $this->id_produit");
+        $select->execute();
+        return $select->fetchAll(PDO::FETCH_OBJ);
+    }
 
-
-    // public function __construct($data)
-    // {
-    //     foreach ($data as $key => $value) {
-
-    //         // error_log(print_r($data, 1));
-    //         // error_log(print_r($this->donnee["$key"] = $value, 1));
-    //         return $this->donnee[$key] = $value;
-    //     }
-    // }
-
-    public function create(Model $data, ?array $relation = null)
+    public function create(Model $data, ?array $relations = null)
     {
         parent::create($data);
+
+        $id = $this->db->getPDO()->lastInsertId();
+        $id = htmlspecialchars(trim(strip_tags(stripslashes($id))));
+
+        foreach ($relations as $catId) {
+            $insert = $this->db->getPDO()->prepare("INSERT produits_categories (produit_id, categorie_id) VALUES ($id, $catId)");
+            $insert->bindValue('produit_id', $id, PDO::PARAM_INT);
+            $insert->bindValue('categorie_id', $catId, PDO::PARAM_INT);
+            $insert->execute();
+        }
+
         return true;
     }
 
     public function update(int $id, Model $data, ?array $relations = null)
     {
         parent::update($id, $data);
-        
+
+        foreach ($relations as $catId) {
+            $update = $this->db->getPDO()->prepare("UPDATE produits_categories SET categorie_id = $catId WHERE produit_id = $id");
+            $update->bindValue('categorie_id', $catId, PDO::PARAM_INT);
+            $update->execute();
+        }
         return true;
     }
 
     public function delete(int $id)
     {
         parent::delete($id);
-        
-        return true;
+
+        $delete = $this->db->getPDO()->prepare("DELETE FROM produits_categories WHERE produit_id = ?");
+        $result = $delete->execute([$id]);
+
+        if ($result) {
+            return true;
+        }
     }
 }
