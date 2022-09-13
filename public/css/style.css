@@ -1,0 +1,33 @@
+@import url(https://bootswatch.com/5/pulse/bootstrap.min.css);
+
+main{
+    margin: 50px 150px;
+}
+
+a {
+    text-decoration: none;
+    color: #f9f8fc;
+}
+a:hover {
+    color: #f9f8fc;
+}
+/* .outline {
+    color: #593196;
+} */
+/* form {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+
+} */
+/* .column {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.taille {
+    width: 50%;
+} */
+/* .contenu {
+    top: 10%;
+} */
