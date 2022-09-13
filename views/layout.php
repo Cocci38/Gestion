@@ -12,10 +12,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/gestion/produits">Gestion</a>
+            <a class="navbar-brand" href="">Gestion</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <?php if (isset($_SESSION['auth'])) : ?>
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -42,6 +43,13 @@
                             <a class="dropdown-item" href="#">Separated link</a>
                         </div>
                     </li> -->
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/gestion/logout">Se déconnecter</a>
+                        </li>
+                    <?php endif ?>
                 </ul>
                 <!-- <form class="d-flex">
                     <input class="form-control me-sm-2" type="text" placeholder="Search">

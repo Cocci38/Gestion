@@ -9,11 +9,6 @@ use App\Models\Categorie;
 class ManagementController extends Controller
 {
 
-    public function index()
-    {
-        echo 'Je suis la homepage';
-    }
-
     /**
      * Méthode qui lie le model à la view
      * On crée un nouveau product 
@@ -23,6 +18,7 @@ class ManagementController extends Controller
      */
     public function product()
     {
+        $this->isAdmin();
         $product = new Product($this->getDB());
         $products = $product->read();
         return $this->view('products.product', compact('products'));
@@ -30,6 +26,7 @@ class ManagementController extends Controller
 
     public function productId(int $id)
     {
+        $this->isAdmin();
         $product = new Product($this->getDB());
         $product = $product->readById($id);
         return $this->view('products.card', compact('product'));
@@ -37,6 +34,7 @@ class ManagementController extends Controller
 
     public function create()
     {
+        $this->isAdmin();
         $categories = (new Categorie($this->getDB()))->read();
         return $this->view('products.form', compact('categories'));
     }
@@ -50,6 +48,7 @@ class ManagementController extends Controller
     }
     public function createProduct()
     {
+        $this->isAdmin();
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
         $price = intVal(htmlspecialchars(trim(strip_tags(stripslashes($_POST['price'])))));
@@ -99,6 +98,7 @@ class ManagementController extends Controller
 
     public function updateProduct(int $id)
     {
+        $this->isAdmin();
         // Retourne le formulaire de modification
         $product = new Product($this->getDB());
         $product = $product->readById($id);
@@ -108,6 +108,7 @@ class ManagementController extends Controller
 
     public function update(int $id)
     {
+        $this->isAdmin();
         // error_log(print_r($_POST, 1));
         $title = htmlspecialchars(trim(strip_tags(stripslashes($_POST['title']))));
         $description = htmlspecialchars(trim(strip_tags(stripslashes($_POST['description']))));
@@ -153,6 +154,7 @@ class ManagementController extends Controller
 
     public function delete(int $id)
     {
+        $this->isAdmin();
         $product = new Product($this->getDB());
         $delete = $product->delete($id);
 

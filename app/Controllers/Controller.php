@@ -13,6 +13,12 @@ class Controller {
      */
     public function __construct(DBConnection $db)
     {
+        // session_status — Détermine le statut de la session courante
+        // PHP_SESSION_NONE si les sessions sont activées, mais qu'aucune n'existe.
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        // error_log(print_r($_SESSION, 1));
         $this->db = $db;
     }
 
@@ -38,7 +44,15 @@ class Controller {
     protected function getDB() {
         return $this->db;
     }
+
+    protected function isAdmin()
+    {
+        if (isset($_SESSION['auth']) && $_SESSION['auth'] === 1) {
+            // error_log('session réussi');die;
+            return true;
+        } else {
+            // error_log('pas de session');die;
+            return header('Location: /gestion');
+        }
+    }
 }
-
-
-?>

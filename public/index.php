@@ -10,15 +10,19 @@ require_once 'config.php';
 $router = new Router( $_GET['url']);
 
 // On appelle la fonction index et show dans le bloc BlogController
-$router->get('/', 'App\Controllers\ManagementController@index'); // Un chemin '/' et une action ManagementController@index' (le controller @ la méthode)
+// $router->get('/', 'App\Controllers\ManagementController@index'); // Un chemin '/' et une action ManagementController@index' (le controller @ la méthode)
 $router->get('/produits', 'App\Controllers\ManagementController@product'); // Dans l'url on écrit produits
 $router->get('/produits/:id', 'App\Controllers\ManagementController@productId'); // Dans l'url on écrit produits/id
 // Route pour afficher le formulaire
 // $router->get('/ajout', 'App\Controllers\ManagementController@form'); // Dans l'url on écrit form
-// Route pour renvoyer le formulaire
+// Routes pour renvoyer le formulaire
 $router->get('/ajout', 'App\Controllers\ManagementController@create');
 $router->get('/update/:id', 'App\Controllers\ManagementController@updateProduct');
-// Route pour traiter les données du formulaire
+// Routes pour la connexion
+$router->get('/', 'App\Controllers\UserController@login');
+$router->post('/', 'App\Controllers\UserController@loginPost');
+$router->get('/logout', 'App\Controllers\UserController@logout');
+// Routes pour traiter les données du formulaire
 $router->post('/ajout', 'App\Controllers\ManagementController@createProduct'); // Dans l'url on écrit form
 $router->post('/update/:id', 'App\Controllers\ManagementController@update');
 $router->post('/delete/:id', 'App\Controllers\ManagementController@delete');
